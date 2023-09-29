@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/v2/sensitiveWords")
+@RequestMapping(path = "/api/v2")
 @Slf4j
 public class ClientRequestController {
 
