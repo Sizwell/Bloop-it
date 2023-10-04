@@ -17,17 +17,48 @@ public class GatewayConfig {
                         .filters(f -> f.stripPrefix(1))
                         .uri("lb://user-service"))
 
-                .route("sensitive-word-service", r -> r
-                        .path("/api/words/**")
-                        .filters(f -> f.stripPrefix(1))
-                        .uri("lb://sensitive-word-service"))
-
-                .route("service1", r -> r
-                        .path("/sayHello/**")
-                        .filters(f -> f.stripPrefix(1))
-                        .uri("service1://sayHello/"))
-                
                 .build();
     }
 
+    @Bean
+    public RouteLocator wordsRouteLocator(RouteLocatorBuilder builder)
+    {
+        String loadBalancerUri = "lb://sensitive-word-service";
+        return builder.routes()
+                .route("add", r -> r
+                        .method("POST")
+                        .and()
+                        .path("/api/v2/sensitiveWords/word/**")
+                        .uri(loadBalancerUri))
+
+                .route("retrieve-all", r -> r
+                        .method("GET")
+                        .and()
+                        .path("/api/v2/sensitiveWords/words/**")
+                        .filters(f -> f.stripPrefix(1))
+                        .uri(loadBalancerUri))
+
+                .route("retrieve-one", r -> r
+                        .method("GET")
+                        .and()
+                        .path("/api/v2/sensitiveWords/word/search/**")
+                        .filters(f -> f.addRequestParameter("word", "{word}"))
+                        .uri(loadBalancerUri))
+
+                .route("update", r -> r
+                        .method("PUT")
+                        .and()
+                        .path("/api/v2/sensitiveWords/word/{id}/**")
+                        .filters(f -> f.rewritePath("/api/v2/sensitiveWords/word/(?<id>.*)", " /${id}"))
+                        .uri(loadBalancerUri))
+
+                .route("delete", r -> r
+                        .method("DELETE")
+                        .and()
+                        .path("/api/v2/sensitiveWords/word/{id}/**")
+                        .filters(f -> f.rewritePath("/api/v2/sensitiveWords/word/(?<id>.*)", " /${id}"))
+                        .uri(loadBalancerUri))
+
+                .build();
+    }
 }
