@@ -93,6 +93,11 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
+            <version>3.1.2</version>
+        </dependency>
 
         <!--		Driver below looks for login credentials and causes a 403 Forbidden error when writing to DB -->
         <!--		<dependency>-->

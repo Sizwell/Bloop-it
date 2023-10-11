@@ -20,7 +20,7 @@
         <module>client-request-services</module>
         <module>discovery-server</module>
         <module>api-gateway</module>
-        <module>service1</module>
+        <module>security</module>
     </modules>
 
     <properties>
