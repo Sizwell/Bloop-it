@@ -31,6 +31,8 @@ public class GatewayConfig {
     {
         return builder.routes()
                 .route("user-service", r -> r
+                        .method("GET")
+                        .and()
                         .path("/api/v2/blooped/**")
                         .filters(f -> f.stripPrefix(1))
                         .uri("lb://user-service"))
