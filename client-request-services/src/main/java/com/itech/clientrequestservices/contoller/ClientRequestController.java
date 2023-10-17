@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -18,13 +17,10 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class ClientRequestController {
 
-    private final WebClient.Builder webClientBuilder;
     private final ClientRequestService clientRequestService;
 
-    private final TestService testService;
-
     @GetMapping(value = "/blooped", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Mono<String> getBlooped() {
-        return clientRequestService.getBlooped();
+    public Mono<ResponseEntity<String>> getBlooped() {
+        return clientRequestService.getBlooped().map(ResponseEntity::ok);
     }
 }

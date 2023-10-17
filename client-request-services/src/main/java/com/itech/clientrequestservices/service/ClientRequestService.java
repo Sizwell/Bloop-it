@@ -1,10 +1,7 @@
 package com.itech.clientrequestservices.service;
 
-
 import com.itech.clientrequestservices.dto.WordDto;
 import com.itech.clientrequestservices.model.WordRequest;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreakerFactory;
