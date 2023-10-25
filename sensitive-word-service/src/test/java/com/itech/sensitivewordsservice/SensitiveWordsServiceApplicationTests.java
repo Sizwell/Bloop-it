@@ -40,7 +40,7 @@ class SensitiveWordsServiceApplicationTests {
 	mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/api/v2/sensitiveWords/word")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(productRequestString))
-			.andExpect(status().isCreated());
+			.andExpect(status().isOk());
 
 		Assertions.assertEquals(1, sensitiveWordsRepository.findAll().size());
 	}

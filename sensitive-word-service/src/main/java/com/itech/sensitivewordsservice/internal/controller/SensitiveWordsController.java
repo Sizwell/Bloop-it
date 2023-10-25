@@ -36,6 +36,14 @@ public class SensitiveWordsController {
 
     }
 
+    @PostMapping("/process")
+    public ResponseEntity<String> bloop(@RequestParam("word") String input) {
+        log.info("To Bloop: \n {}", input);
+        String wordRequests = sensitiveWordsService.bloopIt(input.toUpperCase());
+        log.info("Blooped: \n {}", wordRequests);
+        return ResponseEntity.ok(wordRequests);
+    }
+
     @GetMapping("/words")
     public ResponseEntity<List<WordResponse>> getAllWords() {
         List<WordResponse> words = sensitiveWordsService.getAllSensitiveWords();

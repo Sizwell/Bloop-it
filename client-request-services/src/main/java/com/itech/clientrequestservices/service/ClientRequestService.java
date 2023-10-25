@@ -68,17 +68,26 @@ public class ClientRequestService {
         this.reactiveCircuitBreaker = circuitBreakerFactory.create("user-service");
     }
 
-    public Mono<String> getBlooped() {
-        return reactiveCircuitBreaker
-                .run(webClient
-                        .get()
-                        .uri("/api/v2/sensitiveWords/words")
-                        .retrieve()
-                        .bodyToMono(String.class), throwable -> {
-                    log.warn("Error making request to Sensitive Words Service");
+//    public Mono<String> processData(WordRequest wordRequest) {
+//        return reactiveCircuitBreaker
+//                .run(webClient
+//                        .get()
+//                        .uri("/api/v2/sensitiveWords/process")
+//                        .retrieve()
+//                        .bodyToMono(String.class), throwable -> {
+//                    log.warn("Error making request to Sensitive Words Service");
+//
+//                    return Mono.just("Could not connect to Sensitive Words Service. Please try again later!");
+//                });
+//    }
 
-                    return Mono.just("Could not connect to Sensitive Words Service. Please try again later!");
-                });
+    public Mono<String> processUserInput (String userInput)
+    {
+        return webClient.post()
+                .uri("/api/v2/sensitiveWords/process")
+                .body(Mono.just(userInput), String.class)
+                .retrieve()
+                .bodyToMono(String.class);
     }
 
 
