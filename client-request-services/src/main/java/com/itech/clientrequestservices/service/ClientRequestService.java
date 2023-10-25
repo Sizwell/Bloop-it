@@ -5,12 +5,12 @@ import com.itech.clientrequestservices.model.WordRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreakerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
-//@RequiredArgsConstructor
 @Slf4j
 public class ClientRequestService {
 
@@ -28,34 +28,6 @@ public class ClientRequestService {
                 .build();
     }
 
-//    private final WebClient.Builder webClientBuilder;
-//
-//    public Mono<String> getBlooped() {
-//        String sensitiveWordsServiceUrl = "http://sensitive-word-service/api/v2/sensitiveWords/words";
-//
-//        return webClientBuilder.build()
-//                .get()
-//                .uri(sensitiveWordsServiceUrl)
-//                .retrieve()
-//                .bodyToMono(String.class);
-//    }
-//    private final WebClient webClient;
-//
-//    public ClientRequestService(WebClient.Builder webClientBuilder) {
-//        this.webClient = webClientBuilder.baseUrl("http://sensitive-word-service").build();
-//    }
-//
-//    @CircuitBreaker(name = "microserviceCircuitBreaker", fallbackMethod = "fallback")
-//    public Mono<String> getBlooped() {
-//        return webClient.get()
-//                .uri("/api/v2/sensitiveWords/words")
-//                .retrieve()
-//                .bodyToMono(String.class);
-//    }
-//    public Mono<String> fallback(Exception ex) {
-//        return Mono.just("Fallback response" + ex);
-//    }
-
     private final WebClient webClient;
     private final ReactiveCircuitBreaker reactiveCircuitBreaker;
 
@@ -68,27 +40,17 @@ public class ClientRequestService {
         this.reactiveCircuitBreaker = circuitBreakerFactory.create("user-service");
     }
 
-//    public Mono<String> processData(WordRequest wordRequest) {
-//        return reactiveCircuitBreaker
-//                .run(webClient
-//                        .get()
-//                        .uri("/api/v2/sensitiveWords/process")
-//                        .retrieve()
-//                        .bodyToMono(String.class), throwable -> {
-//                    log.warn("Error making request to Sensitive Words Service");
-//
-//                    return Mono.just("Could not connect to Sensitive Words Service. Please try again later!");
-//                });
-//    }
-
     public Mono<String> processUserInput (String userInput)
     {
+        String url = "/api/v2/sensitiveWords/process";
         return webClient.post()
-                .uri("/api/v2/sensitiveWords/process")
+                .uri(uriBuilder -> uriBuilder.path(url)
+                        .queryParam("word", userInput)
+                        .build())
+                .accept(MediaType.APPLICATION_JSON)
                 .body(Mono.just(userInput), String.class)
                 .retrieve()
                 .bodyToMono(String.class);
     }
-
-
+    
 }

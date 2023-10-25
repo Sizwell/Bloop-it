@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,10 +38,10 @@ public class SensitiveWordsController {
     }
 
     @PostMapping("/process")
-    public ResponseEntity<String> bloop(@RequestBody String input) {
-        log.info("To Bloop: \n {}", input);
+    public ResponseEntity<String> bloop(@Valid @RequestParam (value = "word") String input) {
+        log.info("To Bloop: {}", input);
         String wordRequests = sensitiveWordsService.bloopIt(input.toUpperCase());
-        log.info("Blooped: \n {}", wordRequests);
+        log.info("Blooped: {}", wordRequests);
         return ResponseEntity.ok(wordRequests);
     }
 
