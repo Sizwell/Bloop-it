@@ -11,6 +11,7 @@
     <groupId>com.itech.eureka</groupId>
     <artifactId>discovery-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>discovery-server</name>
     <description>discovery-server</description>
     <properties>
@@ -53,6 +54,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <image>
+                        <name>bloop-${project.artifactId}</name>
+                    </image>
+                </configuration>
             </plugin>
         </plugins>
     </build>

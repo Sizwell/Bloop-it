@@ -14,20 +14,6 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class ClientRequestService {
 
-
-    public String userRequest(String userInput)
-    {
-        log.info("Checking {} ", userInput);
-        return "Processed 1 " + userInput.toLowerCase();
-    }
-
-    private WordDto mapToWordResponse(WordRequest wordRequest)
-    {
-        return WordDto.builder()
-                .word(wordRequest.getWord())
-                .build();
-    }
-
     private final WebClient webClient;
     private final ReactiveCircuitBreaker reactiveCircuitBreaker;
 
