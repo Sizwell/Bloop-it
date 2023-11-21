@@ -1,10 +1,15 @@
 package com.itech.sensitivewordsservice.internal.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.itech.sensitivewordsservice.exceptions.WordNotFoundException;
+import com.itech.sensitivewordsservice.internal.config.SensitiveWordsConfig;
 import com.itech.sensitivewordsservice.internal.dto.WordRequest;
 import com.itech.sensitivewordsservice.internal.dto.WordResponse;
 import com.itech.sensitivewordsservice.internal.entity.SensitiveWords;
+import com.itech.sensitivewordsservice.internal.properties.Properties;
 import com.itech.sensitivewordsservice.internal.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +34,7 @@ public class SensitiveWordsController {
     private final SearchWordService searchWordService;
     private final UpdateWordsService updateWordsService;
     private final DeleteWordService deleteWordService;
+    private final SensitiveWordsConfig sensitiveWordsConfig;
 
     @PostMapping("/word")
     public ResponseEntity<SensitiveWords> addWord(@Valid @RequestBody WordRequest wordRequest) {
@@ -108,5 +114,13 @@ public class SensitiveWordsController {
         catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/sensitives/properties")
+    public String getPropertyDetails() throws JsonProcessingException {
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        Properties properties = new Properties(sensitiveWordsConfig.getMsg(), sensitiveWordsConfig.getBuildVersion(),
+                sensitiveWordsConfig.getMailDetails());
+        return ow.writeValueAsString(properties);
     }
 }
