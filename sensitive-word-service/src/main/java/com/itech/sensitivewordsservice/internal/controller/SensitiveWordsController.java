@@ -1,15 +1,21 @@
 package com.itech.sensitivewordsservice.internal.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.itech.sensitivewordsservice.exceptions.WordNotFoundException;
+import com.itech.sensitivewordsservice.internal.config.SensitiveWordsConfig;
 import com.itech.sensitivewordsservice.internal.dto.WordRequest;
 import com.itech.sensitivewordsservice.internal.dto.WordResponse;
 import com.itech.sensitivewordsservice.internal.entity.SensitiveWords;
+import com.itech.sensitivewordsservice.internal.properties.Properties;
 import com.itech.sensitivewordsservice.internal.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,12 +34,21 @@ public class SensitiveWordsController {
     private final SearchWordService searchWordService;
     private final UpdateWordsService updateWordsService;
     private final DeleteWordService deleteWordService;
+    private final SensitiveWordsConfig sensitiveWordsConfig;
 
     @PostMapping("/word")
     public ResponseEntity<SensitiveWords> addWord(@Valid @RequestBody WordRequest wordRequest) {
         SensitiveWords words = addWordService.addNewWord(wordRequest);
         return new ResponseEntity<>(words, HttpStatus.OK);
 
+    }
+
+    @PostMapping("/process")
+    public ResponseEntity<String> bloop(@Valid @RequestParam (value = "word") String input) {
+        log.info("To Bloop: {}", input);
+        String wordRequests = sensitiveWordsService.bloopIt(input.toUpperCase());
+        log.info("Blooped: {}", wordRequests);
+        return ResponseEntity.ok(wordRequests);
     }
 
     @GetMapping("/words")
@@ -99,5 +114,13 @@ public class SensitiveWordsController {
         catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/sensitives/properties")
+    public String getPropertyDetails() throws JsonProcessingException {
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        Properties properties = new Properties(sensitiveWordsConfig.getMsg(), sensitiveWordsConfig.getBuildVersion(),
+                sensitiveWordsConfig.getMailDetails());
+        return ow.writeValueAsString(properties);
     }
 }

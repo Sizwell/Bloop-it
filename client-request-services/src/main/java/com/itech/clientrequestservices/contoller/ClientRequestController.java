@@ -1,49 +1,39 @@
 package com.itech.clientrequestservices.contoller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.itech.clientrequestservices.config.UserRequestConfig;
 import com.itech.clientrequestservices.dto.WordDto;
+import com.itech.clientrequestservices.properties.Properties;
 import com.itech.clientrequestservices.service.ClientRequestService;
-import com.itech.clientrequestservices.service.TestService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/v2/sensitiveWords")
+@RequestMapping(path = "/api/v2")
 @Slf4j
 public class ClientRequestController {
 
-    private final WebClient.Builder webClientBuilder;
-    ClientRequestService clientRequestService;
+    private final ClientRequestService clientRequestService;
+    private final UserRequestConfig userRequestConfig;
 
-    private final TestService testService;
+    @PostMapping(value = "/bloop", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Mono<String> processUserInput (@Valid @RequestBody WordDto wordDto) {
+        String userInput = wordDto.getWord();
+        return clientRequestService.processUserInput(userInput);
+    }
 
-//    @PostMapping("/bloop")
-//    public List<String> getWords(@Validated @RequestParam String userInput)
-//    {
-//        log.info("Testing 1 {}", userInput.toUpperCase());
-//
-//        return testService.testResponse(userInput);
-//    }
-
-    @GetMapping("/blooped")
-    public Mono<String> getBlooped()
-    {
-        String sensitiveWordsServiceUrl = "http://sensitive-word-service/api/v2/sensitiveWords/words";
-
-        return webClientBuilder.build()
-                .get()
-                .uri(sensitiveWordsServiceUrl)
-                .retrieve()
-                .bodyToMono(String.class);
+    @GetMapping("/bloop/properties")
+    public String getPropertyDetails() throws JsonProcessingException {
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        Properties properties = new Properties(userRequestConfig.getMsg(), userRequestConfig.getBuildVersion(),
+                userRequestConfig.getMailDetails());
+        return ow.writeValueAsString(properties);
     }
 }

@@ -1,5 +1,5 @@
 
-X
-(sensitive-word-service/config.properties,a\9\a962c37180202aaf7eae32d2c33bceabd40504e1
-“
-csensitive-word-service/src/main/java/com/itech/sensitivewordsservice/internal/dto/WordResponse.java,b\3\b39c37b0c533a7cae738701c84a9882fb003e7fb
+¦
+vsensitive-word-service/src/main/java/com/itech/sensitivewordsservice/internal/repository/SensitiveWordsRepository.java,6\d\6dfe576d142b39d547027b4bfc4f7f0103e9df50
+Ÿ
+osensitive-word-service/src/test/java/com/itech/sensitivewordsservice/SensitiveWordsServiceApplicationTests.java,d\4\d4d457553deed8b31cd62f6eb18d423799065711
